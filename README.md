@@ -1,6 +1,6 @@
 # Terms
 Term | Meaning | Use
---|--
+--|--|--
 reacter | fn that reacts to potential states | `function reacter_complete(){}`
 
 # Naming Methodology

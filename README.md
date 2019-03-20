@@ -391,7 +391,11 @@ bob = (v1, v2, v3, v4)->
 -	`...` to indicate repetition of value - value which is indicated by empty comment `<>`
 
 
-For special case of non-positional named parameters, can use secondary object:
+
+### Positional and Non-positional
+Positional parameters are implied by their being on their own line, and it is expected all such parameters are present sequentially.
+
+For special case of non-positional named parameters, use secondary, double newline separated object:
 ```coffee
 ### params
 < v1 >
@@ -428,6 +432,8 @@ However, with complex data which uses inferred strucure from newlines can confli
 ```
 
 ### Variable Params
+Case in which the function can take different sets of parameters,  wherein the number of parameter will change the expected values of the parameters at positions
+
 Use same syntax as variable value, but at the parameter level:
 ```coffee
 ### params
@@ -543,18 +549,21 @@ Server side different-than-project language can either go into `pkg` or into `co
 
 # Spacing
 ```js
-
+// newline = +1 indentation.  Group enclosure = +1 indentation.  
+//	Multiple group enclosures can be combined to a single indentation.
+//	tab separate enclosure endings if combined on their own line
 bill = {bob:{sue:{joe:'monkeys'}}}
 bill = {bob:{sue:{joes:['monkeys'
-	'moos',
-	'miles'	]	}	}	}
+		'moos',
+		'miles'
+	]	}	}	}
 
 // This can be more convenient for editing the list contents
 bill = {bob:{sue:{joes:[
-	'monkeys'
-	'moos',
-	'miles'
-]	}	}	}
+		'monkeys'
+		'moos',
+		'miles'
+	]	}	}	}
 
 // Multiline if, put bracket on separate line for clarity
 if(bob

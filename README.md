@@ -3,6 +3,9 @@ Term | Meaning | Use
 --|--|--
 reacter | fn that reacts to potential states | `function reacter_complete(){}`
 
+
+
+
 # Naming Methodology
 
 -	Use camel case for familiar or related or heavy use terms (classes, modules)
@@ -22,6 +25,7 @@ When reasonably potentially ambiguous, use plural.
  	-	`dir`: trailing /
 	-	`path`: no trailing /
 -	Capitilize singular tools, such as classes, or named tool collections that do not change on a project basis (ex, `Amazon` ,even though not a class, is a bunch of general tools that won't change between projects).
+
 
 
 ## Preference of name category separation
@@ -44,9 +48,12 @@ earth__us__nv__las_vegas
 ```
 -	In cases of multiple separation contexts, increase `_` as necessary
 
+
+
 ## Class
 Camel casing.  If abbreviation is necessary, separate from remainder with `_`:
 -	`US_Utah` instead of `USUtah`
+
 
 ### Is or About
 If a class is about something, not about any particular one, pluralize:  `Users`
@@ -62,6 +69,8 @@ On pluralized "about something" classes, on assumed context functions, assume si
 -	`Users.gets` will get multiple users
 -	`Users.users_get`  will get multiple users
 
+
+
 ## Functions
 ### Standard Format, Possessive Tense
 
@@ -71,8 +80,6 @@ __General Format__
 
 The point of stacking the subjects first is to name-categorize functions:
 `type_add, type_delete, status_add, status_delete` vs `add_type, delete_type, add_status, delete_status`
-
-
 
 __Plural vs Possession__
 use `s` to indicate possession
@@ -111,8 +118,6 @@ There are some more scenarios to consider
 __Part Confusion__
 In the rare case that a subject and act can be confused, use `__` to separate
 
-
-
 __Sequence__
 In the scenario a name for a common sequence can not be determined, just list the sequence
 `user_delete__scoreboard_update`
@@ -124,6 +129,7 @@ __Set Notion__
 The standard for `s` application is based on the idea the situation is usually a one to many, each to each, or each to many.  It is possible for there to be a many to one scenario.  What if all the users had just one house?  `userss_house` is standardly interpretted as a house for each user.  And, what if a group of 20 users shared 4 houses, such that `userss_houses` was intended not to be each to many, entailing 20 or >20, but instead each to one of, entailing the 4 houses.  
 
 In these rare cases, use an `_n` prefixes to indicate there is a numeracy concern: `userss_n_houses`, `userss_n_house`
+
 
 ### Affixes
 `_by_x` describing the parameters
@@ -139,12 +145,12 @@ In these rare cases, use an `_n` prefixes to indicate there is a numeracy concer
 -	`user_has_permission_id` needn't be `user_has_permission_by_permission_id`.  It is reasonable to condense the `by` portion.
 
 
-
 ### Parameter order
 the subject first, then the predicate `has_role($user, $role)`
 
-## Variables
 
+
+## Variables
 ### Plural and Singular
 The desire here is to provide allowance for conventional naming along with the custom possession style naming:
 `item_id` : an item's id (conventional styling)
@@ -154,14 +160,19 @@ The desire here is to provide allowance for conventional naming along with the c
 `itemss_id` : id of each item
 `itemss_ids` : ids of each item (each item has multiple ids)
 
+
 ### Class
 When a variable represents a class instance, capitalize first letter
 `$User = new User` vs `$user = 'bob'`
 
 
+### Increments
+For incremental variables, like `i`, that overlap in nested loops, start with `i`, then add numbers starting from 1: `i, i1, i2, i3`
+
+
 
 ## Database
-On names alone, without rather obtuse naming, interfering with the normal {name describing value} method, having a naming system that allows automated table connection mapping is not feasible for handling the potential complexity.  As such, it is not attempted.
+-	no effort towards programmable meaning from naming: On names alone, without rather obtuse naming, interfering with the normal {name describing value} method, having a naming system that allows automated table connection mapping is not feasible for handling the potential complexity.  As such, it is not attempted.
 
 
 ### Table Naming
@@ -170,8 +181,6 @@ It is assumed a table contains many records, so `user` and not `users`.  Instead
 -	`user_type` to list the potential types any user could have
 
 Generally, when a table is possessed, it should have a possession indicator prefix. Ex `sales_source`.  And, a simple way to check is generally by mentally prefixing with `a` to see if it makes sense: `a sales source` (being sources attributed to a sale on a case by case bases) whereas `sale_source` being a definition of possible sources for sales.
-
-
 
 
 ### Column Naming
@@ -189,7 +198,7 @@ __foreign columns__
 ```simpex
 table'_id'
 \ fc = foreign column
-'fc_'table'__'column \ no tables should have two `__`, so first `__` is indicative of end of table name and start of column name
+'fc_'table'__'column \ no tables should have `__`, so first `__` is indicative of end of table name and start of column name.  In the case the referenced column has a comment, there might be double comments
 ```
 
 __misc__
@@ -208,26 +217,42 @@ __standard names__
 	-	`text` for primary text content (instead of "message", "content", ...)
 	-	`data` for interpretted primary content, affixed with type, ex: `data__json`
 
+
 ### Scope
 
 Ignore custom base prefixes for tables in column naming.  `wp_user.id` referred to with `user_id` not `wp_user_id`.
 
 #### Resolving context
 Normal unprefixed columns:
--	prefer stacked context
+
+-	priorities
+	1.	stacked context (append name to self)
 	`user.type_id` refers to the stacked context of `user_type`.`id`
--	followed by absolute context
+	2.	followed by absolute context
 	`user.type_id` refers to `type.id` if `user_type.id` doesn't exist
+	3.	contexted baseline context (append name to baseline)
+	for some module that has a prefix for all it's tables, append column afterwards: ex: `moduleX_item.type_id` refers to  `moduleX_type.id`
+
+Prefixed with `_`
+-	to disambiguate which of the 3 unprefixed columns types a column might be, a `_` can be used to indicate type #3
+	-	this is usually particularly helpful if a baselined column name would conflict with absolute column name:
+		-	ex:
+			-	`moduleX_post._user_id` to `moduleX_user.id`
+			-	`moduleX_post.user_id` to `user.id`
+
 Prefixed with `__`
 -	use absolute context
 	`user_comment.__type_id` refers to `type.id`
-Prefixed with `_`
--	refers to some base point.  This can vary depending upon the module
-	-	`itemX_event_history._id`  refers to `itemX.id`.  This is based on the idea `event_history` is a module like table, and it should, within it's own context, know of some table `itemX_event_type` so as to refer to it with `_event_type_id`, but it does not know about what `itemX` might be named.
 
-
-De-possession on resolution of stacked context:
+De-possession (`users` to `user`) on resolution of stacked context:
 -	`users_comment.type_id` would refer to `user_comment_type.id`
+
+
+### Table Referencing
+Use first letters of each word.  On collisions, start adding numbers from 1:
+-	`user_folder uf left join unified_field uf1 left join unix_filesystem uf2`
+
+
 
 
 # Parameter Order
@@ -238,8 +263,10 @@ If possible, follow the name of the function.  Ex:
 Otherwise, the primary target (the thing of concern) should be first. Ex:
 -	with `in_array`, the concern is the needle, and whether it is in some array.  So, it is `in_array($needle, $array)`
 
-# Comments
 
+
+
+# Comments
 ## Grouping
 Grouping, hierarchical comments are relative to both the code and the hierarchy.  To indicate the level of hierarchy without compromising the code indentation level, a separated indentation is necessary.  
 
@@ -316,6 +343,8 @@ Comments that describe a grouping comment should go after the grouping comment s
 #+	}
 ```
 
+
+
 ## Misc
 To draw attention to a not-grouping comment
 ```ruby
@@ -334,6 +363,7 @@ bill's group
 ?*/
 
 ```
+
 
 
 ## Inner Sections
@@ -361,16 +391,19 @@ When the purpose needs delineation from further description, or if purpose on sa
 ```
 
 
+
 ## Attention
 ```coffee
 # **deprecated**, blah blah
 ```
 
 
+
 ## Parameters
-Described in coffee syntax, as inferred array
+Described in coffee syntax, as inferred array, with starting and ending blank lines (read readability)
 ```coffee
 ### params
+
 	< v1 > <t: string > < full name >
 	< v2 > <t: int > < age >
 	< v3 > < child array >
@@ -381,6 +414,7 @@ Described in coffee syntax, as inferred array
 			< variable key name > : <>
 		...
 	< v4 > <t: boolean> <d: true> <whether to create the user if doesn't exist>
+
 ###
 bob = (v1, v2, v3, v4)->
 ```
@@ -391,34 +425,39 @@ bob = (v1, v2, v3, v4)->
 -	`...` to indicate repetition of value - value which is indicated by empty comment `<>`
 
 
-
 ### Positional and Non-positional
 Positional parameters are implied by their being on their own line, and it is expected all such parameters are present sequentially.
 
-For special case of non-positional named parameters, use secondary, double newline separated object:
+For the special case of non-positional named parameters, use a secondary, double newline separated object:
 ```coffee
 ### params
+
 < v1 >
 < v2 >
 
 bob: < a value for bob >
 sue: < a value for sue >
+
 ###
 ```
 
 
 ### Variable value
-Use `||` and `()`
+Use `||` to indicate OR'ed, and `()` for grouping
 
 ```coffee
 ### params
+
 	< under_4> (1 || 2 || 3)
+
 ###
 ```
 
-However, with complex data which uses inferred strucure from newlines can conflict with newlines from the use of `()` and `||`.  Consequently, newlines surrounding `()` and `||` should be assumed to be for those symbols, and more verbose description should then be employed for the data description:
+However, with complex data which uses inferred strucure (wherein a newline indicates a new array item or dictionary item), newlines of the structure can conflict with newlines intended for logic semantics (grouping and OR'ing (`()` and `||`)) .  Consequently, newlines surrounding logic semantics (`()` and `||`) should be assumed to be for those symbols, not for structural inference, and, wherein a conflict may arise, a non-implied description of structure (explicitly using `{}` or `[]`) should be used for structure description.
+
 ```coffee
 ### params
+
 < bob > (
 	{
 		< key > : < value >
@@ -428,8 +467,11 @@ However, with complex data which uses inferred strucure from newlines can confli
 		< value >, ...
 	]
 )
+
 ###
 ```
+-	`{}` is used explicitly, instead of relying on the presence of a `key:value` indicating structure
+-	new lines surround both `()` and `||`, and do not imply data structure
 
 ### Variable Params
 Case in which the function can take different sets of parameters,  wherein the number of parameter will change the expected values of the parameters at positions
@@ -437,6 +479,7 @@ Case in which the function can take different sets of parameters,  wherein the n
 Use same syntax as variable value, but at the parameter level:
 ```coffee
 ### params
+
 (
 	< value1 >
 	< value2 >
@@ -445,6 +488,73 @@ Use same syntax as variable value, but at the parameter level:
 (
 	< value a >
 )
+
+###
+```
+
+### Structure Comments
+In cases like variable parameters, it may be useful to describe circumstances of the variability.  To do so, include a prefacing comment in it's own grouping
+
+
+```coffee
+### params
+
+( (for providing multiple values)
+	< value1 >
+	< value2 >
+)
+||
+( (for providing a single value)
+	< value a >
+)
+
+###
+```
+
+## Return
+Same syntax as params, including use of variable return and commenting
+
+```coffee
+# scalar value
+### return
+
+< value >
+
+###
+
+# implied array
+### return
+
+< value >
+< value >
+
+###
+
+# implied object
+### return
+
+key1: < value >
+key2: < value >
+
+###
+
+# conditional return
+### return
+
+( (if search returns a car)
+	< car object >
+)
+||
+( (if search returnss a person)
+	< person object >
+)
+||
+( (if search returns mulltiple objects)
+	[
+		< object >, ...
+	]
+)
+
 ###
 ```
 
@@ -462,12 +572,15 @@ Use same syntax as variable value, but at the parameter level:
 	'<'comment1'><'comment2'>'
 ```
 
+
 ### escaping
 a '>' following a special character is not considered a closing capsulater.  Special characters are `[^a-z0-9 ]`
 
 ```simpex
 '< 2 \> 1 >'\here the comment is 2 > 1
 ```
+
+
 
 ## Special types
 -	describing the value type
@@ -509,8 +622,6 @@ a '>' following a special character is not considered a closing capsulater.  Spe
 
 
 
-
-
 # CRUD+L
 The presentation to others might not conform to standard language.  The url path is not a presentation to others.  However, the presents the issue of, on a "read" page, the title is "view".  However, considering that there is no necessary fidelity of back end naming to front end presentation naming, this is not an issue.  So, the issues are:
 -	what should the front end presentation cal CRUD parts?
@@ -547,23 +658,47 @@ The presentation to others might not conform to standard language.  The url path
 
 Server side different-than-project language can either go into `pkg` or into `control/cli` or `tool`
 
+
+
+
 # Spacing
 ```js
 // newline = +1 indentation.  Group enclosure = +1 indentation.  
 //	Multiple group enclosures can be combined to a single indentation.
 //	tab separate enclosure endings if combined on their own line
 bill = {bob:{sue:{joe:'monkeys'}}}
-bill = {bob:{sue:{joes:['monkeys'
-		'moos',
-		'miles'
-	]	}	}	}
-
-// This can be more convenient for editing the list contents
 bill = {bob:{sue:{joes:[
 		'monkeys'
 		'moos',
 		'miles'
 	]	}	}	}
+
+// if items are apart from their enclosure line, keep the enclosure brackets separated (on separate lines) for additional items:
+bill = [
+		{
+			bob: 123
+		}
+		,{
+			sue: 456
+		}
+	]
+
+// Both comma next to ending item and command next to first item have pros and cons when typing and editing
+// allows for quick deletion:
+bill = [
+		{
+			bob: 123
+		}
+		,{
+			sue: 456
+		}
+	]
+// allows for multiline editing of all items
+bill = [
+		{ bob: 123 },
+		{ sue: 456 }
+	]
+
 
 // Multiline if, put bracket on separate line for clarity
 if(bob
@@ -584,6 +719,9 @@ if(
 
 ```
 
+
+
+
 # Markdown Doc
 Quoted section with markdown highlights
 ```
@@ -600,6 +738,8 @@ blah sect 2 stuff
 ##<
 sect 1 stuff
 ```
+
+
 
 
 # PHP

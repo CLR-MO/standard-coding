@@ -1,9 +1,3 @@
-# Terms
-Term | Meaning | Use
---|--|--
-reacter | fn that reacts to potential states | `function reacter_complete(){}`
-
-
 
 
 # Naming Methodology
@@ -12,19 +6,8 @@ reacter | fn that reacts to potential states | `function reacter_complete(){}`
 	-	except when the name becomes too dense to read quickly
 -	Use `_` for everything else, including variables
 -	use general to specific in most cases (Ex `country_state_city`)
--	Pluralization (see stdlang)
-```
-Use singular for general cases and categories.  That something is inherently plural and needn't be pluralised can be seen in:
--	a database table, which inherently has many
--	a folder "img", which wouldn't make sense only having 1
-When reasonably potentially ambiguous, use plural.  
-```
 -	use generic reference "item" when possible (ex: "item" instead of "blog") with potentially reuseable code
 	-	allow "item" to take place of "entity" (it's easier to type and nearly as inclusive)
--	variables containing path strings:
- 	-	`dir`: trailing /
-	-	`path`: no trailing /
--	Capitilize singular tools, such as classes, or named tool collections that do not change on a project basis (ex, `Amazon` ,even though not a class, is a bunch of general tools that won't change between projects).
 
 
 
@@ -210,6 +193,11 @@ When a variable represents a class instance (of a non-native class), capitalize 
 
 ### Increments
 For incremental variables, like `i`, that overlap in nested loops, start with `i`, then add numbers starting from 1: `i, i1, i2, i3`
+
+
+### Common
+-	`dir`: string with trailing `/`
+-	`path`: string with no trailing `/`
 
 
 

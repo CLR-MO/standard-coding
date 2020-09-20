@@ -50,13 +50,72 @@ earth__us__nv__las_vegas
 
 
 
+## Naming Ambiguity
+
+__Possession Vs Pluralization__
+There is a conflict between pluralization and possesion: `users_items`.  Is this
+-	a user's items
+-	mulltiple users' items?
+
+Plural tends to be the standard interpretation.  To allow for possessive in a manner not ambiguous, a `z` is used where an `'s` would normally be used.  `z` is immediately recognized as awkward, forcing interpretation, which easily comes to be possessive.
+Using this convention, `s` is never used to indicate possession and can alwasy be expected to mean pluralization
+
+The general format of naming is `{context_subject}_{primary_subject}` - a narrowing style. The pairing can still result in ambiguous cases
+-	`itemsz_id`
+	-	is this a single id of multiple items
+	-	is this a single id for each of multiple items
+-	`usersz_types`
+	-	is this a type for each of multiple users
+	-	is this multiple types for each of multiple users
+
+__Set Pairing__
+To illustrate the issue of pairing sets, lets consider the possibilities:
+-	1 <= y <= x <= z
+-	1:1
+	-	a single user with a single id
+-	1:x
+	-	a single user with multiple types
+-	x:x
+	-	multiple users each with a single id
+-	x:z
+	-	multiple users each with multiple types
+	-	in reality, `z` here is just used to indicate an array, and `z` could be smaller than `x` if the arrays were mostly empty
+-	x:1
+	-	multiple roomates with a single house
+-	x:y
+	-	multiple users with some shared houses
+
+`x:1` and `x:y` are normally rare.  If we allow the `primary_subject` to define the plurality, then something like `usersz_types` could be `x:x`, `x:y`, or `x:z` and `usersz_type` would be `x:1`.  However, since `x:1` and `x:y` are rare, we can use the assumption that `x:1` is not meant, and we can use the `context_subject` to define the plurality:
+-	`usersz_type` multiple users each with a single type (x:x)
+-	`usersz_types` multiple users each with multiple types (x:z)
+
+__Possession Vs Category__
+There is an additional case of ambiguity.  With something like, `user_types`, this could be:
+1.	a single user's multiple types
+2.	the general types that apply to any user
+To prevent this case, always use possession if meaning #1 is intended when this ambiguity is possible: `userz_types`.
+
+__general rules__
+-	`userz_type` : an user's type
+-	`userz_types` : an user's multiple types
+-	`usersz_type` : type of each user
+-	`usersz_types` : types of each user (each has multiple types)
+-	`user_types` : the possible types that can apply to the abstract user
+
+__context sensitive rules__
+Some rules can be applied if there is no likely ambiguity given the subjects
+-	`item_id`	the id of a single item
+-	`item_ids` the ids of multiple items
+
+
+
 ## Class
 Camel casing.  If abbreviation is necessary, separate from remainder with `_`:
 -	`US_Utah` instead of `USUtah`
 
 
 ### Is or About
-If a class is about something, not about any particular one, pluralize:  `Users`
+If a class is about something (that contains many), not about any particular one, pluralize:  `Users`
 If a class instance represents something, such as a user, name it as the thing would be called: `User`.  
 
 Since an instance representing multiple of something, such as an instance representing multiples users, is rare, pluralized classes like `Users` is assumed to be about users, and not some instanceable selection of users.
@@ -72,7 +131,9 @@ On pluralized "about something" classes, on assumed context functions, assume si
 
 
 ## Functions
-### Standard Format, Possessive Tense
+See @{Naming Ambiguity}
+
+### Standard Format
 
 __General Format__
 `subject` `act` `modifiers`
@@ -81,54 +142,42 @@ __General Format__
 The point of stacking the subjects first is to name-categorize functions:
 `type_add, type_delete, status_add, status_delete` vs `add_type, delete_type, add_status, delete_status`
 
-__Plural vs Possession__
-use `s` to indicate possession
--	`users_type_get` : get a user's type
--	`user_type_get` : get a `user_type`
+__Singular Is Plural__
+In cases where the word for the singular version is the same as the plural version, add a `s` to the plural version regardless:
+-	`deers`
+-	`fishs` (not an `es` )
 
-This conflicts with pluralization, and there are multiple ways to pluralize
--	context based
--	affixing `s` to action
--	affixing `_s` to function name
--	using `ss` on subject
+__Pluralized Variability__
+Regardless of how the language might pluralize a word (`ey` to `ies`), just add `s` to the singular form to indicate pluralization
 
-Context: Possession can be distinguished from plurality based on the following word
--	`users_type_find` : here, the folowing word is `type`, which can be possessed, and thus assumed is that `users` is possessive
--	`users_find` : the following word is `find`, which is not possessed, but applies to the subject, and thus `users` is plural
-
-Affixing `s`:
--	`user_gets` : get multiple users
-
-Affixing `_s` to function name:
--	`user_get` : get a user
--	`user_get_s` : get multiple users
-(Although this is often easy enough to do in the language without needed to create a separate function)
-
-Using `ss` on subject
--	`userss_type_get` : get the type for each user
-
-There are some more scenarios to consider
--	`user_type_get` : get a user type (not specific to any particualr user)(see db naming)
--	`users_type_get` : user has single type
--	`users_types_get` : user has multiple types
--	`userss_type_get` : get, for each user, a type
--	`userss_types_get` : get, for each user, multiple types
-@note: although `userss_type` will return many, potentially different types, it is kept as `type` to distinguish it from the additional scenario of each user having multiple types - since it is almost never the case that we want to reduce the set (ie, find a shared type between users)
+__Return Plurality__
+When a function returns multiple of something, there is an option in naming
+-	`users_get`
+-	`user_gets`
+To keep inline with subject defining plurality of naming, user `users_get`
 
 __Part Confusion__
 In the rare case that a subject and act can be confused, use `__` to separate
 
 __Sequence__
-In the scenario a name for a common sequence can not be determined, just list the sequence
-`user_delete__scoreboard_update`
+If a sequence of actions in a function can not be given a shortenned name, just list all the parts or the important parts separated with `__`
+`user_delete__scoreboard_update__admin_notification`
 
 __Subject Preference__
-Stack the subject rather than the predicate: prefer `users_type_get` over `user_get_type`
+Stack the subject rather than the predicate: prefer `userz_type_get` over `user_get_type`
 
 __Set Notion__
-The standard for `s` application is based on the idea the situation is usually a one to many, each to each, or each to many.  It is possible for there to be a many to one scenario.  What if all the users had just one house?  `userss_house` is standardly interpretted as a house for each user.  And, what if a group of 20 users shared 4 houses, such that `userss_houses` was intended not to be each to many, entailing 20 or >20, but instead each to one of, entailing the 4 houses.  
+For some many to one relation, special syntax is required.  Say multiple users live in the same house, and a function is expected to return that house based on the users : `usersz_house`.  Ordinarily, this would be interpretted as getting a house per user.  To de-ambiguate, use a `_n` to indicate a many-to-fewer relation, and a `_1` to indicate a many to one relation:
+-	`usersz_1_house`
+-	`userz_n_cars`
 
-In these rare cases, use an `_n` prefixes to indicate there is a numeracy concern: `userss_n_houses`, `userss_n_house`
+__Referring To Class__
+A function might involve a class instance, and it might be desirable to use the class name in the function name.  The class naming, however, makes exact representation in the function name look strange.  This is fine
+-	class `UserType`, function `UserType_get`
+The class reference can also be pluralized
+-	class `UserType`, function `UserTypes_get`
+
+
 
 
 ### Affixes
@@ -151,18 +200,11 @@ the subject first, then the predicate `has_role($user, $role)`
 
 
 ## Variables
-### Plural and Singular
-The desire here is to provide allowance for conventional naming along with the custom possession style naming:
-`item_id` : an item's id (conventional styling)
-`item_ids` : id of each item (conventional styling)
-`items_id` : an item's id
-`items_ids` : an item's multiple ids
-`itemss_id` : id of each item
-`itemss_ids` : ids of each item (each item has multiple ids)
+See @{Naming Ambiguity}
 
 
 ### Class
-When a variable represents a class instance, capitalize first letter
+When a variable represents a class instance (of a non-native class), capitalize first letter
 `$User = new User` vs `$user = 'bob'`
 
 
@@ -176,7 +218,7 @@ For incremental variables, like `i`, that overlap in nested loops, start with `i
 
 
 ### Table Naming
-It is assumed a table contains many records, so `user` and not `users`.  Instead, plural form is used to indicate possession.  `users_group` indicates a map between a user and a group, and `user_group` indicates a group in the `user` context.  So, if a user potentially had many types, we would have
+It is assumed a table contains many records, so pluralization is not necesary.  Ex: `user` and not `users`.  Instead, plural form is used to indicate possession.  `users_group` indicates a map between a user and a group, and `user_group` indicates a group in the `user` context.  So, if a user potentially had many types, we would have
 -	`users_type` to list all the types a particular user had
 -	`user_type` to list the potential types any user could have
 
@@ -239,6 +281,10 @@ Prefixed with `_`
 		-	ex:
 			-	`moduleX_post._user_id` to `moduleX_user.id`
 			-	`moduleX_post.user_id` to `user.id`
+A special case exists of `_id`, where in the module prefix also exists as the primary item table
+-	`moduleX_post._id` would refer to `moduleX.id`
+(@note	if `moduleX.user_id` existed, a `moduleX_post._user_id` would still prefer `moduleX_user.id` if it existed)
+
 
 Prefixed with `__`
 -	use absolute context
@@ -441,15 +487,35 @@ sue: < a value for sue >
 ###
 ```
 
+For readability, provide the first comment  (`<>`)  as the name of the parameter matching the name of the parameter in the function definition, and the following comments (on the same line) as the ones describing the  variable further
+
+```coffee
+### params
+< name > < the full name of the person > <t: string >
+< age > < the of the person at sign up >
+###
+fn = (name, age)->
+	return
+```
+
+
 
 ### Variable value
 Use `||` to indicate OR'ed, and `()` for grouping
 
 ```coffee
 ### params
-
 	< under_4> (1 || 2 || 3)
+###
 
+### params
+	< under_4> (
+		1
+		||
+		2
+		||
+		3
+	)
 ###
 ```
 
@@ -492,6 +558,8 @@ Use same syntax as variable value, but at the parameter level:
 ###
 ```
 
+
+
 ### Structure Comments
 In cases like variable parameters, it may be useful to describe circumstances of the variability.  To do so, include a prefacing comment in it's own grouping
 
@@ -510,6 +578,22 @@ In cases like variable parameters, it may be useful to describe circumstances of
 
 ###
 ```
+
+
+
+### Escaping
+It is sometimes desired to include symbols like `>` in the description.  As such, quotes are prioritized above brackets:
+```coffee
+###
+< value `>` 10 >
+< value '>' 10 >
+< value ">" 10 >
+< `value > 10` >
+< ` > 10` >
+###
+```
+
+
 
 ## Return
 Same syntax as params, including use of variable return and commenting
@@ -748,3 +832,13 @@ sect 1 stuff
 -	any PHP code after HTML must start with at least 1 tab indentation
 -	any multi line PHP code must have it's `<?` and `?>` on lines to themselves
 -	any logic lines must maintain their own indentation, specific to the PHP logic, and separate from the HTML indentation
+
+
+
+
+
+# JS
+## This
+Sometimes the parent `this` must be used.  Further, some times some parent's `this` even further up must be used.  To do this, the parent assigns `this` to some variable usable within the child context.  The naming of the arbitrary parent's `this` can be one of two things
+1.	`that`.  Usually there is only a need to get a single parent's `this`, and which parent is expectable.  If there are multiple levels of `this` required, the additional levels can be identified by appending an incrementer (ex `that2`).
+2.	an identifying name for the parent

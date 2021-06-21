@@ -373,6 +373,14 @@ To abstract the method itself, use `this`
 :this('blah')
 */
 ```
+To qualify/describe the example the example, add a description, separated with `, `:
+```php
+/* example, shows how to get x
+*/
+
+```
+
+
 To illustrate multiple examlpes in a single block, use `/* examples`.  The means of separation is left to the programmer.
 
 

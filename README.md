@@ -1,14 +1,27 @@
 
+@Note, this documentation uses simpex
 
 # Naming Methodology
 
--	Use camel case for familiar or related or heavy use terms (classes, modules)
+-	Use camel case for familiar or related or heavily used terms (classes, modules)
 	-	except when the name becomes too dense to read quickly
 -	Use `_` for everything else, including variables
 -	use general to specific in most cases (Ex `country_state_city`)
 -	use generic reference "item" when possible (ex: "item" instead of "blog") with potentially reuseable code
 	-	allow "item" to take place of "entity" (it's easier to type and nearly as inclusive)
 
+
+## CamelCase Vs Underscore
+Underscores allow the nuances of parts of the name to be more readily identified, allowing for faster examination particularly when there are similarly named tokens.  For example,
+-	`userAdd`
+-	`usersAdd`
+-	`user_add`
+-	`users_add`
+With `userAdd` and `usersAdd`, the inspector must first identify the separation point, and then see whether user is plural or not.  With `user_add` and `users_add`, the difference is immediately apparent.  While the difference in mental parsing is factions of a second, this makes a difference in both preventing mistakes and in time when there is extensive use of camel casing.
+
+As for the difficulty of typing, underscore is a uniform procedure, whereas, typing a capital letter has variable hand placement, resulting in approximately the same time to type.
+As for function length, the difference is negligible in most languages and purposes.
+As for compatibility, underscore tends to be more compatible in different environments (which accept underscors but not case sensitivity)
 
 
 ## Preference of name category separation
@@ -202,15 +215,42 @@ For incremental variables, like `i`, that overlap in nested loops, start with `i
 
 
 ## Database
--	no effort towards programmable meaning from naming: On names alone, without rather obtuse naming, interfering with the normal {name describing value} method, having a naming system that allows automated table connection mapping is not feasible for handling the potential complexity.  As such, it is not attempted.
-
+-	side note: it's not practical to encompass all possible table relation complexity via naming standards.
 
 ### Table Naming
-It is assumed a table contains many records, so pluralization is not necesary.  Ex: `user` and not `users`.  Instead, plural form is used to indicate possession.  `users_group` indicates a map between a user and a group, and `user_group` indicates a group in the `user` context.  So, if a user potentially had many types, we would have
--	`users_type` to list all the types a particular user had
--	`user_type` to list the potential types any user could have
+Two styles of naming are acceptible:
+__style 1, possessive tables__
+It is assumed a table contains many records, so pluralization is not necesary.  Ex: `user` and not `users`.  Instead, `s` form is used to indicate possession, allowing for a {posession form} and a {type form}
+-	_possession form_: `users_type` to list all the types a particular user has
+-	_type form_: `user_type` to list the potential types any user could have
 
-Generally, when a table is possessed, it should have a possession indicator prefix. Ex `sales_source`.  And, a simple way to check is generally by mentally prefixing with `a` to see if it makes sense: `a sales source` (being sources attributed to a sale on a case by case bases) whereas `sale_source` being a definition of possible sources for sales.
+__style 2, pluralized tables__
+Table names should be plural (ex: `users`).  When a table is a sub-table, remove the first table's pluralization (ex `user_comments`).  To indicate {_type form_}, remove pluralization (ex `user_type`).
+
+
+Comparison:
+
+style 1
+-	post
+-	post_type
+-	posts_type
+-	posts_comment
+-	posts_comments_rating
+-	post_comment_type
+-	posts_comments_type
+
+style 2
+-	posts
+-	post_type
+-	post_types
+-	post_comments
+-	post_comment_ratings
+-	post_comment_type
+-	post_comment_types
+
+
+Style 2 is more popular, probably because it matches expectability in language.  The downside to this form is it is less programmatically predictable.  With style 1, it will always be `TABLE's_'SUB_TABLE` for possessed tables.  With style 2, the base will be the result of `'depluralize('TABLE')'`.  Since the depluralize logic will probably be available in all areas where needed, this is not much of an issue.
+
 
 
 ### Column Naming
@@ -269,6 +309,7 @@ Prefixed with `_`
 		-	ex:
 			-	`moduleX_post._user_id` to `moduleX_user.id`
 			-	`moduleX_post.user_id` to `user.id`
+-	the `_` prefix for #3 is unnecessary unless the column is or might become ambiguous with #2 or #1
 A special case exists of `_id`, where in the module prefix also exists as the primary item table
 -	`moduleX_post._id` would refer to `moduleX.id`
 (@note	if `moduleX.user_id` existed, a `moduleX_post._user_id` would still prefer `moduleX_user.id` if it existed)
@@ -279,7 +320,8 @@ Prefixed with `__`
 	`user_comment.__type_id` refers to `type.id`
 
 De-possession (`users` to `user`) on resolution of stacked context:
--	`users_comment.type_id` would refer to `user_comment_type.id`
+-	`users_comment.type_id` would refer to `user_comment_type.id` (style 1)
+
 
 
 ### Table Referencing
@@ -301,6 +343,42 @@ Otherwise, the primary target (the thing of concern) should be first. Ex:
 
 
 # Comments
+
+## DocBlock
+Where possible, [DocBlock](https://docs.phpdoc.org/3.0/guide/references/phpdoc/tags/index.html) should be used to comment code.  However, there are deficiencies:
+-	Examples must be a reference.  You can not show an example within a comment
+-	With `@param`, the capacity to define structure is limited in the format `@param [<Type>] [name] [<description>]`.  It is often useful to describe the full structure of a complex parameter
+-	`@return` same issue as `@param`
+
+
+### Supplemental
+
+Additional comment blocks are supplemented here for a standard.  For example, to show an example code that uses a method, start with `/* example`
+```php
+/* example
+$instance->my_method('blah')
+*/
+```
+To abstract the method from the class, use `.` to indicate an instance method and use `:` to indicate a static method
+```php
+/* example
+.my_method('blah')
+:my_method('blah')
+*/
+```
+To abstract the method itself, use `this`
+```php
+/* example
+.this('blah')
+:this('blah')
+*/
+```
+
+To document structured parameters, use `/* params` and see [Parameters](#Parameters)
+To document a structured return, use `/* reutrn` and see [Return](#Return)
+
+
+
 ## Grouping
 Grouping, hierarchical comments are relative to both the code and the hierarchy.  To indicate the level of hierarchy without compromising the code indentation level, a separated indentation is necessary.  
 
@@ -433,36 +511,106 @@ When the purpose needs delineation from further description, or if purpose on sa
 
 
 
+## Descripters (non-values)
+
+-	descripters should be next to and on the right of the value they describe, or in place of the value in the data structure
+-	all non values contained in '<>'
+```simpex
+	'<'comment'>'
+```
+-	multiple non values can be contained in single '<>' by splitting with '|' or by separate '<>' tags
+```simpex
+	'<'comment1' | 'comment2'>'
+	'<'comment1'><'comment2'>'
+```
+
+
+### escaping
+a '>' following a special character is not considered a closing capsulater.  Special characters are `[^a-z0-9 ]`
+
+```simpex
+'< 2 \> 1 >'\here the comment is 2 > 1
+```
+
+
+
+### Special types
+-	describing the value type
+```simpex
+	'< t:'type' >'
+	'< type:'type' >'
+```
+-	Default value
+```simpex
+	' <d:'value' >'
+	' <default:'value' >'
+```
+-	Default complex value using reference
+```simpex
+	'@ref	{bob: < bool >}'
+	'< d:@ref >'
+	'< default:@ref >'
+```
+
+-	flags
+	-	optional
+```simpex
+		'< f:optional >'
+		'< flag:optional >'
+```
+-	Optional
+```simpex
+<?>
+```
+-	Example value
+```simpex
+< ex:'value' >
+```
+-	local reference value
+```simpex
+'< @'referenceName' >'
+```
+-	global reference value
+```simpex
+'< @@'referenceName' >'
+```
+
+
+
+
 ## Parameters
-Described in coffee syntax, as inferred array, with starting and ending blank lines (read readability)
+
+The parameters comment block should be defined with a multiline comment in the fashion `/* params`.
+To describe a single parameter as a comment block, use `/* param PARAM_NAME`
+
+
+
+Parameters documentation uses _Descripters_.
+
 ```coffee
 ### params
-
-	< v1 > <t: string > < full name >
-	< v2 > <t: int > < age >
-	< v3 > < child array >
-		< child >
-			name:
-			age:
-			notes: [ <>, ... ]
-			< variable key name > : <>
+	< v1 > <t: string > < COMMENT >
+	< v2 > <t: object >:
+		key1: < value >
+		key2: < value >
+	< v3 > < array >:
+		< child1 >
+		< child2 >
 		...
-	< v4 > <t: boolean> <d: true> <whether to create the user if doesn't exist>
-
 ###
-bob = (v1, v2, v3, v4)->
+bob = (v1, v2, v3)->
 ```
--	comments indicated with `<>`
--	comments can be placeholder for data, or can precede the data
--	datastructure, as normal with coffeescript, is infered.  Here, `child array` is indicated by indentation without `:` and `child` dictionary is intefered by indentation with `:`.
--	explicit data structure sometimes useful for inlining, like with `notes`
--	`...` to indicate repetition of value - value which is indicated by empty comment `<>`
+-	syntax is intepretted with indents like coffeescript
+	-	indented sequential lines are intended to represent the structure (like with coffeescript)
+-	the parameters are specified with `< NAME > < COMMENT >`.  The use of the name, in addition to the position, is b/c the parameters can be both positional and named parameters (php 8 allows specifying positional parameters by name instead of position)
+-	`...` used to indicate a repeating pattern of parameters
+
 
 
 ### Positional and Non-positional
 Positional parameters are implied by their being on their own line, and it is expected all such parameters are present sequentially.
 
-For the special case of non-positional named parameters, use a secondary, double newline separated object:
+For the special case of non-positional named parameters (supported in some langauges), use a secondary, double newline separated object:
 ```coffee
 ### params
 
@@ -475,20 +623,8 @@ sue: < a value for sue >
 ###
 ```
 
-For readability, provide the first comment  (`<>`)  as the name of the parameter matching the name of the parameter in the function definition, and the following comments (on the same line) as the ones describing the  variable further
 
-```coffee
-### params
-< name > < the full name of the person > <t: string >
-< age > < the of the person at sign up >
-###
-fn = (name, age)->
-	return
-```
-
-
-
-### Variable value
+### Variable Value
 Use `||` to indicate OR'ed, and `()` for grouping
 
 ```coffee
@@ -527,10 +663,12 @@ However, with complex data which uses inferred strucure (wherein a newline indic
 -	`{}` is used explicitly, instead of relying on the presence of a `key:value` indicating structure
 -	new lines surround both `()` and `||`, and do not imply data structure
 
-### Variable Params
-Case in which the function can take different sets of parameters,  wherein the number of parameter will change the expected values of the parameters at positions
 
-Use same syntax as variable value, but at the parameter level:
+
+### Variable Params
+In the Case where the function can take different sets of parameters.
+
+Use same syntax as [Variable Value](#Variable Value), but group the parameters used brackets:
 ```coffee
 ### params
 
@@ -545,6 +683,16 @@ Use same syntax as variable value, but at the parameter level:
 
 ###
 ```
+
+
+#### Expandable Parameters
+```coffee
+### params
+< value >
+...
+###
+```
+
 
 
 
@@ -584,7 +732,7 @@ It is sometimes desired to include symbols like `>` in the description.  As such
 
 
 ## Return
-Same syntax as params, including use of variable return and commenting
+Same syntax as params, including use of a variable return
 
 ```coffee
 # scalar value
@@ -630,66 +778,6 @@ key2: < value >
 ###
 ```
 
-
-## Descripters (non-values)
-
--	descripters should be next to and on the right of the value they describe, or in place of the value in the data structure
--	all non values contained in '<>'
-```simpex
-	'<'comment'>'
-```
--	multiple non values can be contained in single '<>' by splitting with '|' or by separate '<>' tags
-```simpex
-	'<'comment1' | 'comment2'>'
-	'<'comment1'><'comment2'>'
-```
-
-
-### escaping
-a '>' following a special character is not considered a closing capsulater.  Special characters are `[^a-z0-9 ]`
-
-```simpex
-'< 2 \> 1 >'\here the comment is 2 > 1
-```
-
-
-
-## Special types
--	describing the value type
-```simpex
-	'<t:'type'>'
-	'<type:'type'>'
-```
--	Default value
-```simpex
-	'<d:'value'>'
-	'<default:'value'>'
-```
--	Default complex value using reference
-```simpex
-	'@ref	{bob: <bool>}'
-	'<d:@ref>'
-	'<default:@ref>'
-```
-
--	flags
-	-	optional
-```simpex
-		'<f:optional>'
-		'<flag:optional>'
-```
--	Example value
-```simpex
-<ex:'value'>
-```
--	local reference value
-```simpex
-'<@'referenceName'>'
-```
--	global reference value
-```simpex
-'<@@'referenceName'>'
-```
 
 
 

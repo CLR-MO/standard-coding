@@ -905,10 +905,27 @@ sect 1 stuff
 
 # PHP
 ## HTML Integration
--	PHP code at the beginning of a HTML integrated file can start with 0 indentation
--	any PHP code after HTML must start with at least 1 tab indentation
--	any multi line PHP code must have it's `<?` and `?>` on lines to themselves
--	any logic lines must maintain their own indentation, specific to the PHP logic, and separate from the HTML indentation
+```html
+<?php
+do_something()
+?>
+<div><?= $name ? $name : 'Guest' ?></div>
+<?php	if($tier == 1){ ?>
+<div>Special offers Tier 1</div>
+<?php }elseif($tier == 2){ ?>
+<div>Special Offers Tier 2</div>
+<?php		if($recommendations){ ?>
+<?php
+			do_some_poorly_placed_logic_here();
+			do_more_logic();
+?>
+<!-- recommendations html -->
+<?php		}?>
+<?php	}
+```
+-	HTML and PHP should be separated indented
+-	Flow logic should be on it's own line, with observed indentation, surrounding by open and close tags
+-	Although PHP code at the beginning and end of an HTML can start with no indent, all PHP mixed into HTML should start as a base with one indent.  This is to visually distinguish the code.
 
 
 

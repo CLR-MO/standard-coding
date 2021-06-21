@@ -373,6 +373,8 @@ To abstract the method itself, use `this`
 :this('blah')
 */
 ```
+To illustrate multiple examlpes in a single block, use `/* examples`.  The means of separation is left to the programmer.
+
 
 To document structured parameters, use `/* params` and see [Parameters](#parameters)
 

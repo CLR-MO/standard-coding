@@ -374,8 +374,9 @@ To abstract the method itself, use `this`
 */
 ```
 
-To document structured parameters, use `/* params` and see [Parameters](#Parameters)
-To document a structured return, use `/* reutrn` and see [Return](#Return)
+To document structured parameters, use `/* params` and see [Parameters](#parameters)
+
+To document a structured return, use `/* reutrn` and see [Return](#return)
 
 
 

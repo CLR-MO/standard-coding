@@ -1,5 +1,10 @@
 
-@Note, this documentation uses simpex
+@Note, this documentation uses [simpex](http://github.com/grithin/simpex)
+
+
+# About
+Purpose driven standards for coding
+
 
 # Naming Methodology
 
@@ -53,8 +58,8 @@ There is a conflict between pluralization and possesion: `users_items`.  Is this
 -	a user's items
 -	mulltiple users' items?
 
-Plural tends to be the standard interpretation.  To allow for possessive in a manner not ambiguous, a `z` is used where an `'s` would normally be used.  `z` is immediately recognized as awkward, forcing interpretation, which easily comes to be possessive.
-Using this convention, `s` is never used to indicate possession and can alwasy be expected to mean pluralization
+Plural tends to be the standard interpretation.  To allow for possessive in a manner not ambiguous, a `z` is used where an `'s` would normally be used.  `z` is immediately recognized as awkward, forcing interpretation.
+Using this convention, `s` is never used to indicate possession and can always be expected to mean pluralization
 
 The general format of naming is `{context_subject}_{primary_subject}` - a narrowing style. The pairing can still result in ambiguous cases
 -	`itemsz_id`

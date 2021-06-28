@@ -22,14 +22,25 @@ Underscores allow the nuances of parts of the name to be more readily identified
 -	`usersAdd`
 -	`user_add`
 -	`users_add`
-With `userAdd` and `usersAdd`, the inspector must first identify the separation point, and then see whether user is plural or not.  With `user_add` and `users_add`, the difference is immediately apparent.  While the difference in mental parsing is factions of a second, this makes a difference in both preventing mistakes and in time when there is extensive use of camel casing.
+
+With `userAdd` and `usersAdd`, the inspector must first identify the separation point, and then see whether user is plural or not.  With `user_add` and `users_add`, the difference is immediately apparent.  While the difference in mental parsing is fractions of a second, this makes a difference in both preventing mistakes and in time when there are numerous camel cased, similar tokens.
+
+The benefit of underscore also is present in long variable names:
+-	`userWhoGotCaughtBeforeStart`
+-	`userWhoDidNotGotCaughtBeforeStart`
+-	`user_who_got_caught_before_start`
+-	`user_who_did_not_caught_before_start`
+
+When the variable name is long enough, the separations provided by camel casing become insufficient for quick reading.
 
 As for the difficulty of typing, underscore is a uniform procedure, whereas, typing a capital letter has variable hand placement, resulting in approximately the same time to type.
-As for function length, the difference is negligible in most languages and purposes.
+
+As for function length, the difference is negligible for most purposes.
+
 As for compatibility, underscore tends to be more compatible in different environments (which accept underscors but not case sensitivity)
 
 
-## Preference of name category separation
+## Preference Of Name Category Separation
 
 The characters of separation are often `.` or `-` or `:`.
 ```
@@ -43,11 +54,11 @@ There are problems with these characters:
 -	not all environments support them in names
 -	a name part itself may contain the character, thus confusing part of a name part with the name part separation
 
-`__` is almost never used within a name part, and it is almost always available as part of the naming characters.  The downside is that it is ugly and it is two characters.   However, it provides consistency and reliability, and you have not encountered scenarios where there is a need for the separation to be just one character, so use this form of separation
+`__` is almost never used within a name part, and it is almost always available as part of the naming characters.  The downside is that it is ugly and it is two characters.   However, it provides consistency and reliability.
 ```
 earth__us__nv__las_vegas
 ```
--	In cases of multiple separation contexts, increase `_` as necessary
+-	In cases of multiple separation contexts, increase the number of  `_` as necessary
 
 
 
@@ -61,6 +72,7 @@ There is a conflict between pluralization and possesion: `users_items`.  Is this
 Plural tends to be the standard interpretation.  To allow for possessive in a manner not ambiguous, a `z` is used where an `'s` would normally be used.  `z` is immediately recognized as awkward, forcing interpretation.
 Using this convention, `s` is never used to indicate possession and can always be expected to mean pluralization
 
+__Set Pairing__
 The general format of naming is `{context_subject}_{primary_subject}` - a narrowing style. The pairing can still result in ambiguous cases
 -	`itemsz_id`
 	-	is this a single id of multiple items
@@ -69,7 +81,7 @@ The general format of naming is `{context_subject}_{primary_subject}` - a narrow
 	-	is this a type for each of multiple users
 	-	is this multiple types for each of multiple users
 
-__Set Pairing__
+
 To illustrate the issue of pairing sets, lets consider the possibilities:
 -	1 <= y <= x <= z
 -	1:1
@@ -605,11 +617,11 @@ Parameters documentation uses _Descripters_.
 
 ```coffee
 ### params
-	< v1 > <t: string > < COMMENT >
-	< v2 > <t: object >:
+	< v1 > < t: string > < COMMENT >
+	< v2 > < t: object >
 		key1: < value >
 		key2: < value >
-	< v3 > < array >:
+	< v3 > < t:array >
 		< child1 >
 		< child2 >
 		...
@@ -618,6 +630,7 @@ bob = (v1, v2, v3)->
 ```
 -	syntax is intepretted with indents like coffeescript
 	-	indented sequential lines are intended to represent the structure (like with coffeescript)
+		-	`v2` is intepretted as an object by it's keys being in object property form.  `v3` is interpretted as an array because its keys are in array form
 -	the parameters are specified with `< NAME > < COMMENT >`.  The use of the name, in addition to the position, is b/c the parameters can be both positional and named parameters (php 8 allows specifying positional parameters by name instead of position)
 -	`...` used to indicate a repeating pattern of parameters
 

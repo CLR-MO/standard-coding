@@ -361,49 +361,53 @@ Otherwise, the primary target (the thing of concern) should be first. Ex:
 
 # Comments
 
-## DocBlock
-Where possible, [DocBlock](https://docs.phpdoc.org/3.0/guide/references/phpdoc/tags/index.html) should be used to comment code.  However, there are deficiencies:
--	Examples must be a reference.  You can not show an example within a comment
--	With `@param`, the capacity to define structure is limited in the format `@param [<Type>] [name] [<description>]`.  It is often useful to describe the full structure of a complex parameter
--	`@return` same issue as `@param`
+Documentation generators help understand code.  I've found the best to be doxygen.  I have found phpdoc to be unreliable (with various errors occurring on multiple systems on php 7.0, 7.4, and no support for 8).  
+
+
+
+## Modern DocBlock
+
+The original DocBlock, with it's space-asterisk, existed to make the presense of the comment apparent in editors that didn't have syntax highlighting.  These days, developers use editors that have syntax highlighting, and such ornamentation is unnecessary.  That a comment starts with `/**` is enough to indicate it is a documentation comment.
 
 
 ### Supplemental
 
 Additional comment blocks are supplemented here for a standard.  For example, to show an example code that uses a method, start with `/* example`
 ```php
-/* example
+/** example
 $instance->my_method('blah')
 */
 ```
 To abstract the method from the class, use `.` to indicate an instance method and use `:` to indicate a static method
 ```php
-/* example
+/** example
 .my_method('blah')
 :my_method('blah')
 */
 ```
 To abstract the method itself, use `this`
 ```php
-/* example
+/** example
 .this('blah')
 :this('blah')
 */
 ```
 To qualify/describe the example the example, add a description, separated with `, `:
 ```php
-/* example, shows how to get x
+/** example, shows how to get x
 */
 
 ```
 
 
-To illustrate multiple examlpes in a single block, use `/* examples`.  The means of separation is left to the programmer.
+To illustrate multiple examlpes in a single block, use `/** examples`.  The means of separation is left to the programmer.
 
 
-To document structured parameters, use `/* params` and see [Parameters](#parameters)
+To document structured parameters, use `/** params` and see [Parameters](#parameters)
 
-To document a structured return, use `/* reutrn` and see [Return](#return)
+To document a structured return, use `/** reutrn` and see [Return](#return)
+
+Have a comment block devoted to non-machine-interpretted information about the code (like a long description) `/** about`
 
 
 

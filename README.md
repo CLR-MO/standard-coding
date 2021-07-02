@@ -2,6 +2,63 @@
 @Note, this documentation uses [simpex](http://github.com/grithin/simpex)
 
 
+<!-- TOC -->
+
+- [About](#about)
+- [Naming Methodology](#naming-methodology)
+	- [CamelCase Vs Underscore](#camelcase-vs-underscore)
+	- [Preference Of Name Category Separation](#preference-of-name-category-separation)
+	- [Naming Ambiguity](#naming-ambiguity)
+	- [Class](#class)
+		- [Is or About](#is-or-about)
+	- [Functions](#functions)
+		- [Standard Format](#standard-format)
+		- [Affixes](#affixes)
+		- [Convenience](#convenience)
+		- [Parameter order](#parameter-order)
+	- [Variables](#variables)
+		- [Class](#class-1)
+		- [Increments](#increments)
+		- [Common](#common)
+	- [Database](#database)
+		- [Table Naming](#table-naming)
+		- [Column Naming](#column-naming)
+		- [Scope](#scope)
+			- [Resolving context](#resolving-context)
+		- [Table Referencing](#table-referencing)
+- [Comments](#comments)
+	- [Modern DocBlock](#modern-docblock)
+	- [Extending DocBlock](#extending-docblock)
+		- [Supplemental](#supplemental)
+	- [Grouping](#grouping)
+	- [Misc](#misc)
+	- [Inner Sections](#inner-sections)
+	- [Attention](#attention)
+	- [Descripters (non-values)](#descripters-non-values)
+		- [escaping](#escaping)
+		- [Special types](#special-types)
+	- [Parameters](#parameters)
+		- [Positional and Non-positional](#positional-and-non-positional)
+		- [Long Descriptions](#long-descriptions)
+		- [Variable Value](#variable-value)
+		- [Variable Params](#variable-params)
+			- [Expandable Parameters](#expandable-parameters)
+		- [Structure Comments](#structure-comments)
+		- [Escaping](#escaping)
+	- [Return](#return)
+- [CRUD+L](#crudl)
+- [Organisation of files for projects](#organisation-of-files-for-projects)
+	- [Within pub/pri web projects](#within-pubpri-web-projects)
+- [Spacing](#spacing)
+- [Markdown Doc](#markdown-doc)
+- [PHP](#php)
+	- [HTML Integration](#html-integration)
+- [JS](#js)
+	- [This](#this)
+
+<!-- /TOC -->
+
+
 # About
 Purpose driven standards for coding
 
@@ -208,7 +265,18 @@ The class reference can also be pluralized
 
 
 ### Parameter order
-the subject first, then the predicate `has_role($user, $role)`
+
+
+
+If possible, follow the name of the function.  Ex:
+-	`is_user_in_group_id` : `$user_id, $group_id`
+
+Otherwise, The subject first, then the predicateEx:
+-	`has_role($user, $role)`
+-	with `in_array`, the concern is the needle, and whether it is in some array.  So, it is `in_array($needle, $array)`
+
+
+
 
 
 
@@ -348,26 +416,52 @@ Use first letters of each word.  On collisions, start adding numbers from 1:
 
 
 
-# Parameter Order
-
-If possible, follow the name of the function.  Ex:
--	`is_user_in_group_id` : `$user_id, $group_id`
-
-Otherwise, the primary target (the thing of concern) should be first. Ex:
--	with `in_array`, the concern is the needle, and whether it is in some array.  So, it is `in_array($needle, $array)`
-
-
-
-
 # Comments
-
-Documentation generators help understand code.  I've found the best to be doxygen.  I have found phpdoc to be unreliable (with various errors occurring on multiple systems on php 7.0, 7.4, and no support for 8).  
-
-
 
 ## Modern DocBlock
 
+[Thoughts On PHPDocumentor](https://clrmo.com/2021/06/thoughts-on-phpdocumentor/)
+
 The original DocBlock, with it's space-asterisk, existed to make the presense of the comment apparent in editors that didn't have syntax highlighting.  These days, developers use editors that have syntax highlighting, and such ornamentation is unnecessary.  That a comment starts with `/**` is enough to indicate it is a documentation comment.
+
+## Custom Documentation Comments
+
+### Working With current documentation generators
+
+**Avoid Misinterpretation**
+
+Custom comments can break documentation generators.  Consequently, some custom comment blocks like
+```php
+/** example
+arbitraty code
+*/
+```
+Should not be indicated as a doc block, and should use `/* example ... */` to prevent breaking the documentation generator with the code it will misinterpret within the example.
+
+
+**Consider Order**
+
+Various custom comment blocks are presented here.  Let's consider how existing documentation generators will interpret them
+
+```php
+/** params
+< >
+< >
+*/
+```
+
+This will be interpretted like `summary = "params", description = "<>\n<>"`.  Although it can be useful to have this information presented somewhere in the documentation, and putting it in the description is fine, having the `params` part being labeled as the summary is bad, so make sure to put the summary before the custom documentation comment blocks.
+```php
+/** summary text
+Description text
+*/
+/** params
+< >
+*/
+```
+
+
+
 
 
 ### Supplemental
@@ -405,10 +499,17 @@ To illustrate multiple examlpes in a single block, use `/** examples`.  The mean
 
 To document structured parameters, use `/** params` and see [Parameters](#parameters)
 
-To document a structured return, use `/** reutrn` and see [Return](#return)
+To document a structured return, use `/** return` and see [Return](#return)
 
 Have a comment block devoted to non-machine-interpretted information about the code (like a long description) `/** about`
 
+
+### Special Tokens
+(under consideration)
+
+Inside of an area that is supposed to be plain text, some special tokens can be used
+-	@{ref: x} to reference a thing 'x' within the page or codebase
+-	@{def: x} to define a thing 'x'
 
 
 ## Grouping
@@ -497,14 +598,14 @@ To draw attention to a not-grouping comment
 
 Table of contents.  Without an automated generator, from groups, it may be desirable to add a comment table of contents
 ```c
-/*?
+/** toc
 
 bob's group
 	sub group 1
 	sub group b
 bill's group
 
-?*/
+*/
 
 ```
 
@@ -653,6 +754,19 @@ For the special case of non-positional named parameters (supported in some langa
 bob: < a value for bob >
 sue: < a value for sue >
 
+###
+```
+
+### Long Descriptions
+In some cases, the `< >` describer part may be better separated into multiple lines.  To prevent this from being interpretted as multiple parameters, use `<( ...  )>`
+```coffee
+### params
+< param1 >
+< param2 > < description of param 2 > <(
+	< continued description blocks for param 2 >
+	< more description >
+)>
+< param3 >
 ###
 ```
 

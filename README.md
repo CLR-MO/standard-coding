@@ -101,9 +101,13 @@ As for compatibility, underscore tends to be more compatible in different enviro
 
 Back in 2007, I wrote a coding standard that used camel casing.  My argument was that camel casing was shown in a study to be read faster.  In using that standard for over 10 years, I noticed issues, particularly when adopting the standard for naming long functions based on subject and predicate.  So, I experimented with underscores (not snake case).  In experimenting, I released the above notes, and revised my coding standard.
 
-I think the reason camel casing can be shown to be read faster is that the mind identifies the function as a single token when using short names.  Something like "userAdd" is a single token in the mind, whereas "user_add" is two tokens.  However, I find the clarity more important than the trivial amount of time saved in reading, if indeed there is any time saved.
+I think the reason camel casing can be shown to be read faster is that the mind identifies the camel cased word combination as a single token.  Something like "userAdd" is a single token in the mind, whereas "user_add" is two tokens.  However, I find the clarity more important than the trivial amount of time saved in reading, if indeed there is any time saved.
 
 
+### Conclusion
+Use camel casing when the speed of reading is more important than the potential mistake of misreading
+-	use underscore for variables and functions, where there are potentially multiple long similar names that can result in mistakes
+-	use camel casing for classes, which are readily distinquished from other classes
 
 
 ## Preference Of Name Category Separation
@@ -191,7 +195,7 @@ Some rules can be applied if there is no likely ambiguity given the subjects
 ## Class
 Use camel casing.  
 
-Classes fit the best use of camel casing - common, unmistakeable, brief tokens.  
+Classes fit the best use of camel casing - common, unmistakeable, brief word sequences. 
 
 If abbreviation is necessary, separate from remainder with `_`:
 -	`US_Utah` instead of `USUtah`

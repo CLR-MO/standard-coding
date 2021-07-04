@@ -1120,6 +1120,7 @@ But, as screens are large and rotatable now, the extra line isn't as much of a p
 
 
 __In conclusion__
+-	PSR-12 is good enough and will probably improve interoperabilty of code between developers
 -	I have minor reservations about PSR 12
 	-	The [use of spaces](tabs-or-spaces).  However, with larger screens, 4 spaces does not usually push deep logic too far to the right.
 	-	The use of a new line for starting `{`.  However, since this does not apply to conditionals, the amount of wasted vertical space is limited and acceptable

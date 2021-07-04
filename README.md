@@ -189,7 +189,11 @@ Some rules can be applied if there is no likely ambiguity given the subjects
 
 
 ## Class
-Camel casing.  If abbreviation is necessary, separate from remainder with `_`:
+Use camel casing.  
+
+Classes fit the best use of camel casing - common, unmistakeable, brief tokens.  
+
+If abbreviation is necessary, separate from remainder with `_`:
 -	`US_Utah` instead of `USUtah`
 
 

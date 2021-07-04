@@ -97,6 +97,15 @@ As for function length, the difference is negligible for most purposes.
 As for compatibility, underscore tends to be more compatible in different environments (which accept underscors but not case sensitivity)
 
 
+### A Note On My History
+
+Back in 2007, I wrote a coding standard that used camel casing.  My argument was that camel casing was shown in a study to be read faster.  In using that standard for over 10 years, I noticed issues, particularly when adopting the standard for naming long functions based on subject and predicate.  So, I experimented with underscores (not snake case).  In experimenting, I released the above notes, and revised my coding standard.
+
+I think the reason camel casing can be shown to be read faster is that the mind identifies the function as a single token when using short names.  Something like "userAdd" is a single token in the mind, whereas "user_add" is two tokens.  However, I find the clarity more important than the trivial amount of time saved in reading, if indeed there is any time saved.
+
+
+
+
 ## Preference Of Name Category Separation
 
 The characters of separation are often `.` or `-` or `:`.
@@ -969,6 +978,12 @@ Server side different-than-project language can either go into `pkg` or into `co
 
 
 # Spacing
+
+
+
+
+
+
 ```js
 // newline = +1 indentation.  Group enclosure = +1 indentation.  
 //	Multiple group enclosures can be combined to a single indentation.
@@ -1025,6 +1040,161 @@ if(
 }
 
 ```
+
+
+## PHP PSR 12
+It was a bit odd to me that a "Framework _Interoperability_ Group" would recommend a coding style that is apart from functionality.
+
+I've seen a few reason why people excuse mandating a coding standard
+1.	"to reduce cognitive friction when scanning code from different authors"
+2.	coding style related commit diffs obscure actual code changes
+
+The reality is, these two excuses hide the real issues.  Let's explore.
+
+For issue #1, any code that adheres to some sane coding style has never caused me cognitive friction, even when there are mixed styles, so long as the indentation is the same.  I've worked on many different code bases with different styles, and the only time there is an issue is when the coder has abandoned clarity (such as not maintaining proper indents).  The real issue behind #1 is actually split into two issues:
+1.	some programmers program without clarity
+2.	some programmers encounter "cognitive friction" when seeing a coding standard apart from what they are used to
+
+Requiring a specific coding standard gets rid of sub issues 1 and 2.  
+
+But, I've never met a sub-issue-2 programmer.  Further, code without clarity is readily identifiable.  Forcing a coding standard helps prevent a bad programmer from showing up through their unclear code.
+
+For issue #2, this is again split into two issues
+1.	formatting changes should be a different commit
+2.	formatting changes should not be a commit for code that is already clear
+
+Let's say the `!!` was accidental, and someone with a different style edits the following code:
+```
+if(!!$is_active){
+	#...
+}
+```
+changes to
+```
+if ( !$is_active )
+{
+	#...
+}
+```
+Even in this case, if this were a commit, it would still be clear what was changed.  
+
+What becomes a problem is when a programmer modifies code for style purposes only, and commits that with non-style related changes.  It is a problem that pretty much would only occur with a bad programmer, who did something like, auto-style-format a file after making a change to the logic, and then committed the file.  The absence of mind not to realize that the logic change will be buried in the style changes does indeed point to a bad programmer.
+
+Normally, when a programmer x with style 1 edits code from someone else that is styled with style 2, two outcomes might occur:
+1. the sections of the code that programmer x modifies/adds become style 1
+2. programmer x uses style 2 for this code
+
+Either of these cases is not a problem so long as both style 1 and style 2 are clear and the indentation is the same.  Amusingly, with outcome #1, it makes it more immediately apparent there was a different programmer who worked on the code.  But, even in the case of #1, back in 2006, when i was working with svn, I wrote an svn hook that took the code I submitted and formatted in accordance to the project coding standard.  With such a hook or auto formatter, it wouldn't matter if the outcome was #1, because the code that made it to the project would remain standard to one style.
+
+But, if outcome #1 occurred with no hook, the issue with mixing styles is primarily an issue of indentation type.  Given editors now will adapt the indentation type to the indentation type present in the  file, this is normally not a problem.
+
+[Google](https://google.github.io/styleguide/cppguide.html) has some insights on coding standards
+
+-	`The benefit of a style rule must be large enough to justify asking all of our engineers to remember it. `
+-	`When something surprising or unusual is happening in a snippet of code (for example, transfer of pointer ownership), leaving textual hints for the reader at the point of use is valuable`
+-	`"Just pick one and stop worrying about it"; the potential value of allowing flexibility on these points is outweighed by the cost of having people argue over them.`
+-	` Consistency should not generally be used as a justification to do things in an old style without considering the benefits of the new style, or the tendency of the code base to converge on newer styles over time`
+-	`The basic principle is: The more code that fits on one screen, the easier it is to follow and understand the control flow of the program. Use white space purposefully to provide separation in that flow.`
+
+This last item is something that used to matter to me with smaller screens.  When you have functions defined like
+
+```
+function bob ()
+{
+	#...
+}
+```
+That extra line  for the opening brace takes up space and accumulates across multiple functions, reducing the total amount of code on the screen.  I tried to find why people prefer this style, and I get:
+1.	easy to visually spot the beginning of the code block
+2.	the presence of the function/method is clearer
+
+Both of these justifications are trivial.  For #1, that is what indentation is for.  For #2, get an editor that better highlights method/function definitions so they are clearer.
+
+In reality, my impression is that some programmers get intimidated by dense code, and the extra newline for braces helps to reduce the intimidation.
+
+When screens were smaller, and I couldn't rotate my screen 90 degrees to allow even more lines of code, extra newlines meant my capacity to see a large number of useful programming lines was reduced.  When you are getting the sense of a large class, the ability to rapidly scan it, scan through the methods, with the ability to arbitrarily drill in visually, is important.  
+
+To magnify this issue, imagine having an editor that was only 5 lines tall, and think of how long it might take to understand a large class with thousands of lines.
+
+But, as screens are large and rotatable now, the extra line isn't as much of a problem.
+
+
+__In conclusion__
+-	I have minor reservations about PSR 12
+	-	The [use of spaces](tabs-or-spaces).  However, with larger screens, 4 spaces does not usually push deep logic too far to the right.
+	-	The use of a new line for starting `{`.  However, since this does not apply to conditionals, the amount of wasted vertical space is limited and acceptable
+-	Different styles don't matter so long as they are clear.  The mixing of styles is mostly a problem when tabs and spaces are mixed, which can be prevented by a good editor.  Programmers have been modifying each others code for decades and different, clear, styles has not prevent this interoperability
+-	PSR 12 should not be a FIG PSR.  The point of interoperability is whether some code will work in different environments.  PSR 12 is for how programmers react to code, not for how the code functions in different environments.
+
+
+
+
+
+## Tabs or spaces
+
+<!-- https://softwareengineering.stackexchange.com/questions/57/tabs-versus-spaces-what-is-the-proper-indentation-character-for-everything-in-e -->
+
+I tried to get the argument for spaces, and all I get is
+-	spaces show up the same regardless of editor
+-	some editors do handle tabs well
+
+Since most coding software allows for customization of tab size, this reason for using spaces in serious programming has always baffled me.  I've never seen a programmer use an editor where the tab character is a problem, but I've seen multiple system administrators using vi or nano that complain about the use of tabs.
+
+There are cases where spaces are necessary, (lining up columns with variable character count starts), but, here, spacing is used for design, not for indication of flow level; and, spacing can be used along side tabs for that purpose
+```
+	var a = 1,
+	    b = 2;
+```
+
+Given that indent size readability is variable (my preference is 3 spaces, or 2 for deeply nested code), it further baffles me that people would argue for mandating something that variably reduces readability (depending on person) for code.
+
+In general, people (and google search) don't make a good case for spaces.  
+
+**So, I will present the primary reason I suspect is behind using spaces.**
+
+Back in the early days, you would likely be editing in an editor that did not provide syntax highlighting and did not easily allow configuring tab size.  In this situation, spaces were preferred, and a great deal of code was written with space indentation.  When editing this code, or when copying pieces of this code into new files, if you are using tabs, you will have an unwanted mix of tabs and spaces for indentation.  Given most people do not have their editor set to show the space and tab character as anything but empty space, the mix of spaces and tabs becomes variably problematic depending on what editor is looking at the file.  This mixing annoyance, given the previous standard of using spaces, would necessitate a standard for using only spaces (so as to be compatible with old code and to prevent the accidental mixing of tabs and spaces).
+
+_So, the real reason for using spaces is because of legacy, and then conformity._
+
+Even if you start a new project, because the legacy of old code mandated spaces, you will be met with the cases of:
+1.	if you import code into your project, that code will likely be indented with spaces, resulting in the potential for accidental mixing of indentation style
+2.	good/old programmers you hire will likely be accustomed to using spaces for indentation
+
+So, the choice becomes
+1.	use the better tab indentation but account for unintentional mixing with space indented libraries
+2.	use the worse space indentation and don't worry about mixing
+
+If you don't care that much, #2 is the better answer with team projects.  However, even with team projects, #1 is do-able.  Just write a commit hook that prevents mixing.
+
+This situation also helps describe the type of people that think (not just prefer) one is better than the other:
+-	spaces
+	-	is an administrator
+	-	is a designer
+	-	un-questioningly conforming programmers
+	-	veteran programmers who've dealt with the mixing issue and know the trade offs
+-	tab
+	-	programmers optimizing apparent functionality (good programmers that have not encountered the mixing issue, likely b/c of lack of variable team experience)
+	-	idealists
+
+This also explains the constant arguing.   When arguing occurs in the following combinations of people, there is likely no solution:
+-	administrator with good programmer
+-	designer with good programmer
+-	un-questioningly conforming programmer with good programmer
+
+What I found odd is that veteran programmers will unconsciously know this space tab trade off, but I have found no account of one of them describing it online or in person.
+
+Personally, for my own projects, I use tabs for files I create, and I use whatever indentation is present for files originated by others.  I don't find indent mixing is an issue b/c my editor displays the space and tab characters in different colors, and I have a script for converting whenever I want to mix code.  But, as I said, for team projects, you have to consider what I mentioned above.
+
+
+As a side note, I would have previously argued against 4 spaces.  In the past, I've dealt with logic indented deeply enough that the use of 4 spaces per indent resulted in the logic going off my screen, and I had to scroll horizontally.  But, with bigger screens, this has not been a problem.
+
+
+__Misc Reasons For Tabs If Not Considering Teams And Legacy__
+-	Less characters
+-	Configurable width
+-	No issue with accidental +-1 space
+
+
 
 
 

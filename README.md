@@ -195,7 +195,7 @@ Some rules can be applied if there is no likely ambiguity given the subjects
 ## Class
 Use camel casing.  
 
-Classes fit the best use of camel casing - common, unmistakeable, brief word sequences. 
+Classes fit the best use of camel casing - common, unmistakeable, brief word sequences.
 
 If abbreviation is necessary, separate from remainder with `_`:
 -	`US_Utah` instead of `USUtah`
@@ -1053,6 +1053,8 @@ if(
 ## PHP PSR 12
 It was a bit odd to me that a "Framework _Interoperability_ Group" would recommend a coding style that is apart from functionality.
 
+### Problems With Coding Style Differences
+
 I've seen a few reason why people excuse mandating a coding standard
 1.	"to reduce cognitive friction when scanning code from different authors"
 2.	coding style related commit diffs obscure actual code changes
@@ -1104,7 +1106,10 @@ But, if outcome #1 occurred with no hook, the issue with mixing styles is primar
 -	` Consistency should not generally be used as a justification to do things in an old style without considering the benefits of the new style, or the tendency of the code base to converge on newer styles over time`
 -	`The basic principle is: The more code that fits on one screen, the easier it is to follow and understand the control flow of the program. Use white space purposefully to provide separation in that flow.`
 
-This last item is something that used to matter to me with smaller screens.  When you have functions defined like
+
+### Line Conservation
+
+This last item from google is something that used to matter to me with smaller screens.  When you have functions defined like
 
 ```
 function bob ()
@@ -1127,11 +1132,27 @@ To magnify this issue, imagine having an editor that was only 5 lines tall, and 
 But, as screens are large and rotatable now, the extra line isn't as much of a problem.
 
 
-__In conclusion__
--	PSR-12 is good enough and will probably improve interoperabilty of code between developers
+### Spaces And Camel Casing
+
+As a FIG PSR, I disagree with both the mandating of spaces and camel casing.  
+
+For spaces, since there are good reasons for both [tabs and spaces]((https://github.com/CLR-MO/standard-coding#tabs-or-spaces)), and the use of either doesn't matter so much as does the consistency within the specific code of a project (doesn't so much matter what libraries/plugins/extensions use), the mandating of spacing is an overreach.
+
+As for the camel casing, as I allude to, [camel casing variables and methods is a rookie mistake](https://github.com/CLR-MO/standard-coding#camelcase-vs-underscore) that I myself made for over a decade.  The good thing, however, is that this aspect of the PSR can be ignored with almost no consequence.
+
+When programmers are using a class, their expectation for the function names comes from first seeing the class functions.  If those class functions are uniformly either camel cased or underscored, it sets their expectation for that class.  So, to the degree that a function can be expected without looking at the actual function, a divergence from the PSR does not matter so long as it is consistent within the class.
+
+There is a rare occasion that function names are dynamically determined by compilation of words.  Despite writing such a compilation tool myself, this occurrence is so rare that it needn't be considered.
+
+It is just as unnecessary to conform variable names either way.
+
+
+
+### In Conclusion
+-	PSR-12 will improve accessibility of code in projects that would have otherwise not had a coding standard.
 -	I have minor reservations about PSR 12
-	-	The use of camel casing
-	-	The [use of spaces](tabs-or-spaces).  However, with larger screens, 4 spaces does not usually push deep logic too far to the right.
+	-	The use of camel casing, but this can be ignored
+	-	The [use of spaces](https://github.com/CLR-MO/standard-coding#tabs-or-spaces).  However, with larger screens, 4 spaces does not usually push deep logic too far to the right.
 	-	The use of a new line for starting `{`.  However, since this does not apply to conditionals, the amount of wasted vertical space is limited and acceptable
 -	Different styles don't matter so long as they are clear.  The mixing of styles is mostly a problem when tabs and spaces are mixed, which can be prevented by a good editor.  Programmers have been modifying each others code for decades and different, clear, styles has not prevent this interoperability
 -	PSR 12 should not be a FIG PSR.  The point of interoperability is whether some code will work in different environments.  PSR 12 is for how programmers react to code, not for how the code functions in different environments.

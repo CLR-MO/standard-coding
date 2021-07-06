@@ -7,7 +7,10 @@
 - [About](#about)
 - [Naming Methodology](#naming-methodology)
 	- [CamelCase Vs Underscore](#camelcase-vs-underscore)
+		- [A Note On My History](#a-note-on-my-history)
+		- [Conclusion](#conclusion)
 	- [Preference Of Name Category Separation](#preference-of-name-category-separation)
+	- [Naming Exceptions](#naming-exceptions)
 	- [Naming Ambiguity](#naming-ambiguity)
 	- [Class](#class)
 		- [Is or About](#is-or-about)
@@ -28,8 +31,10 @@
 		- [Table Referencing](#table-referencing)
 - [Comments](#comments)
 	- [Modern DocBlock](#modern-docblock)
-	- [Extending DocBlock](#extending-docblock)
+	- [Custom Documentation Comments](#custom-documentation-comments)
+		- [Working With current documentation generators](#working-with-current-documentation-generators)
 		- [Supplemental](#supplemental)
+		- [Special Tokens](#special-tokens)
 	- [Grouping](#grouping)
 	- [Misc](#misc)
 	- [Inner Sections](#inner-sections)
@@ -50,6 +55,12 @@
 - [Organisation of files for projects](#organisation-of-files-for-projects)
 	- [Within pub/pri web projects](#within-pubpri-web-projects)
 - [Spacing](#spacing)
+	- [PHP PSR 12](#php-psr-12)
+		- [Problems With Coding Style Differences](#problems-with-coding-style-differences)
+		- [Line Conservation](#line-conservation)
+		- [Spaces And Camel Casing](#spaces-and-camel-casing)
+		- [In Conclusion](#in-conclusion)
+	- [Tabs or spaces](#tabs-or-spaces)
 - [Markdown Doc](#markdown-doc)
 - [PHP](#php)
 	- [HTML Integration](#html-integration)
@@ -105,10 +116,12 @@ I think the reason camel casing can be shown to be read faster is that the mind 
 
 
 ### Conclusion
-Use camel casing when the speed of reading is more important than the potential mistake of misreading
+Use camel casing when the speed of reading is more important than the potential mistake of misreading.  Generally, this results in:
+
 -	use underscore for variables and functions, where there are potentially multiple long similar names that can result in mistakes
 -	use camel casing for classes, which are readily distinquished from other classes
 
+However, there are [exceptions](#naming-exceptions).
 
 ## Preference Of Name Category Separation
 
@@ -129,6 +142,26 @@ There are problems with these characters:
 earth__us__nv__las_vegas
 ```
 -	In cases of multiple separation contexts, increase the number of  `_` as necessary
+
+
+
+## Naming Exceptions
+
+When there is some standard with some set of methods, the commonality of the standard makes the fluidity of writing and reading more important.  This fluidity stems from language itself.  Further, the chance of mistaking similarly named functions is low because:
+1.	programmers remember standard methods and are apt to distinguish them
+2.	standard method names tend to be short
+
+Comparing
+```
+getHeaders()
+getHeader()
+headers_get()
+header_get()
+```
+The `getHeaders` is more natural to language and the extra clarity provided by the underscore and ordering is unnecesasry.
+
+As such, an exception to the above naming conventions is a standard or widely used tool.
+
 
 
 

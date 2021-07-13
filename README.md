@@ -1324,10 +1324,36 @@ $data = format_data($data)
 ?>
 ```
 -	HTML and PHP should be separately indented
--	PHP wihtin HTML should start with one space after `<?php`, and 5 spaces on their own lines.  After that, indent style can be either tab or spaces.
 -	Flow logic should be on it's own line, with observed indentation, surrounding by open and close tags
 -	PHP code at the beginning and end of an HTML can start with no indent.
+-	Single line code should start with one space after `<?php`
+-	Multiline code within HTML should start one the line after `<?php`, and with 5 spaces at the start of each line to create the same offset as `<?php `.  After that, indent style can be either tab or spaces.
 
+
+### Compairson to Twig
+
+```html
+<?php foreach($users as $user){ ?>
+	* <?= $user->name ?>
+<?php }else{ ?>
+	No users have been found.
+<?php } ?>
+
+```
+
+```twig
+{% for user in users %}
+    * {{ user.name }}
+{% else %}
+    No users have been found.
+{% endfor %}
+```
+
+Sure, PHP is a bit more verbose, but
+-	the points of logic are more clear (they would not be lost in a big template and confused with content)
+-	the logic depth logic is easier to follow with braces.  With Twig, if someone didn't properly indent nested for loops, the depth could be confused.
+
+ by using braces,
 
 
 

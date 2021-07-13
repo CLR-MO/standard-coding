@@ -1351,7 +1351,7 @@ $data = format_data($data)
 
 Sure, PHP is a bit more verbose, but
 -	the points of logic are more clear (they would not be lost in a big template and confused with content)
--	the logic depth logic is easier to follow with braces.  With Twig, if someone didn't properly indent nested for loops, the depth could be confused.
+-	the logic depth is easier to follow with braces.  With Twig, if someone didn't properly indent nested for loops, the depth could be confused.
 
  by using braces,
 

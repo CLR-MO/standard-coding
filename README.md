@@ -821,6 +821,15 @@ In some cases, the `< >` describer part may be better separated into multiple li
 ```
 
 
+### Variable Keys
+```coffee
+### params
+< object_arg_1 >
+	< description of key > : < description of value >
+###
+```
+
+
 ### Variable Value
 Use `||` to indicate OR'ed, and `()` for grouping
 
@@ -1285,27 +1294,39 @@ sect 1 stuff
 
 # PHP
 ## HTML Integration
+
+When integrating PHP with HTML, PHP code that does stuff should be distinct from HTML.  The PHP code that displays/outputs stuff can be integrated.  In this way, things remain neat and decipherable and the depth of logic is clear.
+
 ```html
 <?php
-do_something()
+$data = format_data($data)
 ?>
-<div><?= $name ? $name : 'Guest' ?></div>
-<?php	if($tier == 1){ ?>
-<div>Special offers Tier 1</div>
-<?php }elseif($tier == 2){ ?>
-<div>Special Offers Tier 2</div>
-<?php		if($recommendations){ ?>
+<div>
+	List of data
+<?php if ($data) { ?>
+<?php 	foreach($data as $datum){ ?>
 <?php
-			do_some_poorly_placed_logic_here();
-			do_more_logic();
+      		# multiple lines of display functions handling data
+      		# ...
 ?>
-<!-- recommendations html -->
-<?php		}?>
-<?php	}
+	<div>
+<?php 		foreach($datum as $k=>$v){ /* print out all the keys and values*/ ?>
+		<div><?= escape($k) ?> : <?= escape($v) ?></div>
+<?php 		} ?>
+	</div>
+<?php 	} ?>
+<?php } else { ?>
+	<div>There was no data</div>
+<?php } ?>
+</div>
+<?php
+# final view related php code
+?>
 ```
--	HTML and PHP should be separated indented
+-	HTML and PHP should be separately indented
+-	PHP wihtin HTML should start with one space after `<?php`, and 5 spaces on their own lines.  After that, indent style can be either tab or spaces.
 -	Flow logic should be on it's own line, with observed indentation, surrounding by open and close tags
--	Although PHP code at the beginning and end of an HTML can start with no indent, all PHP mixed into HTML should start as a base with one indent.  This is to visually distinguish the code.
+-	PHP code at the beginning and end of an HTML can start with no indent.
 
 
 
